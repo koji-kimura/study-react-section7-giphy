@@ -1,25 +1,43 @@
+import React from "react";
+import ReactDOM from "react-dom";
 import axios from "axios";
 
-const search = "cat";
-const key = "cSY7uF4g6yCC7gx8ls4EJS7GBkEBhOKq";
-const limit = 3;
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = { gifUrlList: [] };
+  }
 
-const url = `https://api.giphy.com/v1/gifs/search?q=${search}&api_key=${key}&limit=${limit}`;
+  renderImageList(list) {
+    const imageList = list.map(url => {
+      return <img src={url} />;
+    });
+    return imageList;
+  }
+  // ライフサイクルメソッドがある
+  componentDidMount() {
+    this.giphyApi();
+  }
+  render() {
+    // console.log(this.state.gifUrlList);
+    return <div>{this.renderImageList(this.state.gifurlList)}</div>;
+  }
 
-axios.get(url).then(res => {
-  console.log(res.data);
-  const data = res.data.data;
-  const imageUrl = data[0].images.downsized.url;
-  console.log(imageUrl);
-  const img = document.createElement("img");
-  img.src = imageUrl;
-  document.body.appendChild(img);
-});
+  giphyApi() {
+    const search = "cat";
+    const key = "cSY7uF4g6yCC7gx8ls4EJS7GBkEBhOKq";
+    const limit = 3;
 
-// import React from "react";
-// import ReactDOM from "react-dom";
+    const url = `https://api.giphy.com/v1/gifs/search?q=${search}&api_key=${key}&limit=${limit}`;
 
-// import "./styles.css";
+    axios.get(url).then(res => {
+      console.log(res.data);
+      const data = res.data.data;
+      const imageUrlList = data.map(item => item.images.downsized.url);
+      this.setState({ gifUrlList: imageUrlList });
+    });
+  }
+}
 
 // function App() {
 //   return (
@@ -30,5 +48,5 @@ axios.get(url).then(res => {
 //   );
 // }
 
-// const rootElement = document.getElementById("root");
-// ReactDOM.render(<App />, rootElement);
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
